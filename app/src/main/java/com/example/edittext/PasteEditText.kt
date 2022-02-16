@@ -8,7 +8,7 @@ import java.lang.NullPointerException
 
 class PasteEditText : androidx.appcompat.widget.AppCompatEditText {
     var listeners: ArrayList<PasteEditTextListener>
-    var canPaste = false
+    var isPaste = false
 
     constructor(context: Context?) : super(context!!) {
         listeners = ArrayList()
@@ -35,15 +35,15 @@ class PasteEditText : androidx.appcompat.widget.AppCompatEditText {
     }
 
     override fun onTextContextMenuItem(id: Int): Boolean {
-        val consumed = super.onTextContextMenuItem(id)
         when (id) {
             R.id.cut -> onTextCut()
-            R.id.paste -> onTextPaste()
-            R.id.copy -> {
-                var canPaste = true
-                onTextCopy()
+            R.id.paste -> {
+                isPaste = true
+                onTextPaste()
             }
+            R.id.copy -> onTextCopy()
         }
+        val consumed = super.onTextContextMenuItem(id)
         return consumed
     }
 
@@ -52,7 +52,6 @@ class PasteEditText : androidx.appcompat.widget.AppCompatEditText {
 
     fun onTextPaste() {
         for (listener in listeners) {
-            canPaste = false
             listener.onUpdate()
         }
     }
